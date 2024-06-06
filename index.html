@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sketchpad</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: hwb(187 16% 40%);
+    }
+    .header {
+      margin-bottom: 20px;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      width: 450px; /* Adjusted size to be smaller */
+      height: 450px; /* Adjusted size to be smaller */
+      border: 2px solid #333;
+      margin-bottom: 20px;
+    }
+    .square {
+      flex: 1 0 calc(100% / var(--numSquares));
+      height: calc(100% / var(--numSquares));
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .controls input {
+      width: 300px;
+      margin-top: 20px;
+    }
+    .header button, .controls button {
+      margin-top: 10px;
+      background-color: beige;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .controls label {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <button onclick="promptForGridSize()">Set Grid Size</button>
+  </div>
+  <div class="container" id="container"></div>
+  <div class="controls">
+    <input type="range" id="gridSizeSlider" min="1" max="100" value="16" oninput="updateGridSize(this.value)">
+    <label for="gridSizeSlider">Grid Size: <span id="gridSizeLabel">16</span>x<span id="gridSizeLabel">16</span></label>
+    <button onclick="resetGrid()">Reset Grid</button>
+  </div>
+
+  <script>
+    const container = document.getElementById('container');
+    const gridSizeSlider = document.getElementById('gridSizeSlider');
+    const gridSizeLabel = document.getElementById('gridSizeLabel');
+
+    function createGrid(numSquares) {
+      container.innerHTML = ''; // Clear previous grid
+      container.style.setProperty('--numSquares', numSquares);
+      for (let i = 0; i < numSquares * numSquares; i++) {
+        const square = document.createElement('div');
+        square.classList.add('square');
+        square.addEventListener('mouseover', () => {
+          square.style.backgroundColor = 'black'; // Change color on hover
+        });
+        container.appendChild(square);
+      }
+    }
+
+    function updateGridSize(size) {
+      gridSizeLabel.textContent = size;
+      createGrid(size);
+    }
+
+    function resetGrid() {
+      createGrid(gridSizeSlider.value);
+    }
+
+    function promptForGridSize() {
+      const numSquares = prompt('Enter the number of squares per side (max 100):');
+      if (numSquares !== null && numSquares !== '') {
+        const parsedNum = parseInt(numSquares);
+        if (!isNaN(parsedNum) && parsedNum > 0 && parsedNum <= 100) {
+          gridSizeSlider.value = parsedNum;
+          updateGridSize(parsedNum);
+        } else {
+          alert('Please enter a valid number between 1 and 100.');
+        }
+      }
+    }
+
+    // Initial grid size
+    createGrid(16);
+  </script>
+</body>
+</html>
